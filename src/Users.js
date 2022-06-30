@@ -1,4 +1,6 @@
 import React from 'react';
+import { connect } from 'react-redux';
+
 
 const Users = ({ users })=> {
   return (
@@ -17,6 +19,11 @@ const Users = ({ users })=> {
       </ul>
     </div>
   );
-};
+}
 
-export default Users;
+const mapStateToProps = (state)=> {
+  return {
+    users: state.users
+  };
+}
+export default connect(mapStateToProps)(Users);

@@ -1,4 +1,8 @@
 import React from 'react';
+import { connect } from 'react-redux';
+
+
+
 
 const Nav = ({ users, things, view })=> {
   return (
@@ -8,6 +12,10 @@ const Nav = ({ users, things, view })=> {
       <a href='#users' className={ view === 'users' ? 'selected': ''}>Users ({ users.length })</a>
     </nav>
   );
+}
+
+const mapStateToProps = (state)=> {
+  return state;
 };
 
-export default Nav;
+export default connect(mapStateToProps)(Nav);

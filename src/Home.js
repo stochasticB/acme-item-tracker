@@ -1,4 +1,5 @@
 import React from 'react';
+import { connect } from 'react-redux';
 
 const Home = ({ users, things })=> {
   return (
@@ -11,4 +12,11 @@ const Home = ({ users, things })=> {
   );
 };
 
-export default Home;
+const mapSToP = (s)=> {
+  return {
+    users: s.users,
+    things: s.things
+  };
+};
+
+export default connect(mapSToP)(Home);

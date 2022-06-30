@@ -1,7 +1,8 @@
 import React from 'react';
 import ThingForm from './ThingForm';
+import { connect } from 'react-redux';
 
-const Things = ({ things, createThing })=> {
+const Things = ({ things })=> {
   return (
     <div>
       <h1>Things</h1>
@@ -16,9 +17,15 @@ const Things = ({ things, createThing })=> {
           })
         }
       </ul>
-      <ThingForm createThing={ createThing }/>
+      <ThingForm />
     </div>
   );
 };
 
-export default Things;
+export default connect(
+  (state)=> {
+    return {
+      things: state.things
+    }
+  }
+)(Things);

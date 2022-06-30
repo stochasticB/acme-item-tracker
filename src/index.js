@@ -6,58 +6,39 @@ import Nav from './Nav';
 import Users from './Users';
 import Things from './Things';
 import Home from './Home';
+import store from './store';
+import { Provider, connect } from 'react-redux';
 
 const root = createRoot(document.querySelector('#app'));
 
-class App extends Component{
-  constructor(){
-    super();
-    this.state = {
-      users: [],
-      things: [],
-      view: window.location.hash.slice(1)
-    };
-    this.createThing = this.createThing.bind(this);
-  }
-  async createThing(){
-    try {
-      const response = await axios.post('/api/things', { name: Math.random() });
-      const thing = response.data;
-      this.setState({ things: [...this.state.things, thing]});
-    }
-    catch(ex){
-      console.log(ex);
-    }
-  }
+class _App extends Component{
   async componentDidMount(){
     window.addEventListener('hashchange', ()=> {
-      this.setState({ view: window.location.hash.slice(1) });
+      this.props.setView(window.location.hash.slice(1));
     });
     try {
-      const responses = await Promise.all([
-        axios.get('/api/users'),
-        axios.get('/api/things'),
-      ]);
-      this.setState({ users: responses[0].data, things: responses[1].data });
+      this.props.loadData();
     }
     catch(ex){
       console.log(ex);
     }
   }
   render(){
-    const { users, things, view } = this.state;
-    const { createThing } = this;
+    const { view } = this.props;
     return (
       <div>
-        <Nav things = { things } users = { users } view = { view }/>
+        <Nav />
         {
-          view === '' ? <Home users={ users } things={ things }/> : null
+          view === '' ? <Home /> : null
+
         }
         {
-          view === 'users' ? <Users users={ users } /> : null
+          view === 'users' ? <Users /> : null
+
         }
         {
-          view === 'things' ? <Things things={ things } createThing={ createThing }/> : null
+          view === 'things' ? <Things /> : null
+
         }
       </div>
     );
@@ -65,7 +46,37 @@ class App extends Component{
 }
 
 
-root.render(<App />);
+const mapDispatch = (dispatch)=> {
+  return {
+    setView: (view)=> {
+      dispatch({ type: 'SET_VIEW', view });
+    },
+    loadData: async()=> {
+      const responses = await Promise.all([
+        axios.get('/api/users'),
+        axios.get('/api/things'),
+      ]);
+      dispatch({
+        type: 'SET_USERS',
+        users: responses[0].data
+      });
+      dispatch({
+        type: 'SET_THINGS',
+        things: responses[1].data
+      });
+    }
+  };
+};
+const mapStateToProps = state => {
+  return {
+    view: state.view
+  };
+};
+
+const App = connect(mapStateToProps, mapDispatch)(_App);
+
+
+root.render(<Provider store={ store }><App /></Provider>);
 /*
 const root = document.querySelector('#app');
 render(React.createElement('hr'), root);
