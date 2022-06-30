@@ -3,10 +3,20 @@ const express = require('express');
 const app = express();
 const path = require('path');
 
+app.use(express.json());
 app.use('/dist', express.static('dist'));
 
 app.get('/', (req, res)=> res.sendFile(path.join(__dirname, 'index.html')));
 
+
+app.post('/api/things', async(req, res, next)=> {
+  try {
+    res.status(201).send(await Thing.create(req.body));
+  }
+  catch(ex){
+    next(ex);
+  }
+});
 app.get('/api/things', async(req, res, next)=> {
   try {
     res.send(await Thing.findAll());
