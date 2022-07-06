@@ -19,8 +19,50 @@ const store = createStore((state = initialState, action)=> {
   if(action.type === 'CREATE_THING'){
     return {...state, things: [...state.things, action.thing ]}; 
   }
+  if(action.type === 'DELETE_THING'){
+    const things = state.things.filter(_thing => _thing.id !== action.thing.id);
+    return {...state, things}; 
+  }
+  if(action.type === 'CREATE_USER'){
+    return {...state, users: [...state.users, action.user]};
+  }
+  if(action.type === 'DELETE_USER'){
+    const users = state.users.filter(_user => _user.id !== action.user.id);
+    const things = state.things.filter(_thing => _thing.userId !== action.user.id);
+    return {...state, users, things};
+  }
+  if(action.type === 'INCREASE_RANKING'){
+    const updatedThings = [];
+    state.things.map(_thing => {
+      if(_thing.id === action.updatedThing.id){
+        _thing.ranking = action.updatedThing.ranking
+      }
+      updatedThings.push(_thing)
+    });
+    return {...state, things: updatedThings};
+  }
+  if(action.type === 'DECREASE_RANKING'){
+    const updatedThings = [];
+    state.things.map(_thing => {
+      if(_thing.id === action.updatedThing.id){
+        _thing.ranking = action.updatedThing.ranking
+      }
+      updatedThings.push(_thing)
+    });
+    return {...state, things: updatedThings};
+  }
+  if(action.type === 'UPDATE_USER'){
+    const updatedThings = [];
+    state.things.map(_thing => {
+      if(_thing.id === action.updatedThing.id){
+        _thing.userId = action.updatedThing.userId
+      }
+      updatedThings.push(_thing)
+    });
+    return {...state, things: updatedThings};
+  }
+
   return state;
 });
 
 export default store;
-
